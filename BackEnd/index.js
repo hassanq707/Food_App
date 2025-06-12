@@ -20,7 +20,19 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 
-app.use(cors());
+const allowedOrigins = [
+  process.env.FRONTEND_URL, 
+  'http://localhost:5173'  
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'token']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Db Connection
 
