@@ -1,7 +1,7 @@
 const FOOD_MODEL = require("../models/foodModel");
+const { cloudinary } = require("../config/cloudinary");
 
 const addFood = async (req, res) => {
-    const image_file = req.file?.path; 
     const { name, description, price, category } = req.body;
     try {
         const food = await FOOD_MODEL.create({
@@ -9,7 +9,10 @@ const addFood = async (req, res) => {
             description,
             price,
             category,
-            image: image_file,  
+            image: {
+                url: req.file.path,          // Cloudinary URL
+                public_id: req.file.filename // Cloudinary public_id
+            },
         });
         res.json({ success: true, message: "Food has been added" });
     } catch (err) {
@@ -29,8 +32,12 @@ const listFood = async (req, res) => {
 };
 
 const removeFood = async (req, res) => {
+    const { id, public_id } = req.body;
     try {
-        await FOOD_MODEL.findByIdAndDelete({ _id: req.body.id });
+        await FOOD_MODEL.findByIdAndDelete(id);
+        if (public_id) {
+            await cloudinary.uploader.destroy(public_id);
+        }
         res.json({ success: true, message: "Food Item has been Deleted" });
     } catch (err) {
         console.log(err);
@@ -39,23 +46,24 @@ const removeFood = async (req, res) => {
 };
 
 const updateFood = async (req, res) => {
-    const image_file = req.file?.path;  
-    const { name, description, price, category, _id } = req.body;
-
+    const { name, description, price, category, _id, oldimage } = req.body;
     try {
         const food = await FOOD_MODEL.findById(_id);
-
         food.name = name;
         food.description = description;
         food.price = price;
         food.category = category;
 
-        if (image_file) {
-            food.image = image_file;
+        if (req.file) {
+            if (oldimage) {
+                await cloudinary.uploader.destroy(oldimage);
+            }
+            food.image = {
+                url: req.file.path,
+                public_id: req.file.filename
+            };
         }
-
         await food.save();
-
         res.json({ success: true, message: "Food has been updated" });
     } catch (err) {
         console.log(err);

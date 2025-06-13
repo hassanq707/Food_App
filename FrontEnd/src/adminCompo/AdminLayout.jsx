@@ -1,9 +1,8 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { FaPlus, FaList, FaClipboardList, FaBars, FaTimes } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clear_name, clear_admin_auth } from "../store/slices/TokenSlice"; 
-import axios from "axios"
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

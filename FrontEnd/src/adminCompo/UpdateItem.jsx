@@ -38,7 +38,7 @@ const UpdateItem = ({ url }) => {
         formData.append('price', Number(data.price));
         formData.append('category', data.category);
         formData.append('image', image);
-        formData.append('oldimage', oldImage);
+        formData.append('oldimage', oldImage.public_id);  
         formData.append('_id', item._id);
 
         try {
@@ -92,7 +92,7 @@ const UpdateItem = ({ url }) => {
                                 />
                             ) : item.image ? (
                                 <img
-                                    src={item.image}
+                                    src={item.image.url}
                                     alt="preview"
                                     className="w-full h-full object-cover"
                                 />

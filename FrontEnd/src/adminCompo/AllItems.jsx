@@ -3,10 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom";
 
-
-const AllItems = ({url}) => {
-  
-const [list, setList] = useState([]);
+const AllItems = ({ url }) => {
+  const [list, setList] = useState([]);
 
   useEffect(() => {
     axios.get(`${url}/api/food/list`)
@@ -19,19 +17,23 @@ const [list, setList] = useState([]);
         }
       })
       .catch(err => console.log(err));
-}, []);
-  const handleRemoveItem = async (id) => {
-    const response = await axios.post(`${url}/api/food/remove`, { id });
-    const { success, message } = response.data;
+  }, []);
 
-    toast.error(message);
-    if (success) {
-      toast.success(message);
-      setList(list.filter((item) => item._id !== id));
-    } else {
+  const handleRemoveItem = async (id, public_id) => {
+    try {
+      const response = await axios.post(`${url}/api/food/remove`, { id, public_id });
+      const { success, message } = response.data;
+
+      toast.error(message);
+      if (success) {
+        toast.success(message);
+        setList(list.filter((item) => item._id !== id));
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete item.");
     }
   };
-
 
   return (
     <div className="w-[95%] lg:w-[90%] mx-auto bg-white my-8">
@@ -59,7 +61,7 @@ const [list, setList] = useState([]);
                 <tr key={item._id} className="border-b border-gray-200 text-gray-800">
                   <td className="p-2 sm:p-3">
                     <img
-                      src={item.image}
+                      src={item.image.url}
                       alt={item.name}
                       className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
                     />
@@ -71,7 +73,7 @@ const [list, setList] = useState([]);
                   <td className="p-2 sm:p-3">{item.price}</td>
                   <td className="px-4 text-red-600 text-2xl">
                     <span
-                      onClick={() => handleRemoveItem(item._id)}
+                      onClick={() => handleRemoveItem(item._id, item.image.public_id)}
                       className="cursor-pointer hover:underline"
                     >
                       &times;
@@ -80,7 +82,7 @@ const [list, setList] = useState([]);
                   <td className="p-2 sm:p-3 text-blue-600 text-sm">
                     <Link 
                       to="/admin/updateitem"  
-                      state={ item }
+                      state={item}
                       className="cursor-pointer hover:underline"
                     >
                       Edit
