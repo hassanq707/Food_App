@@ -121,7 +121,7 @@ const Cart = ({ url }) => {
                   <tr key={item._id} className="border-b border-gray-200">
                     <td className="p-2 sm:p-3">
                       <img
-                        src={item.image}
+                        src={item.image.url}
                         alt={item.name}
                         className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
                       />

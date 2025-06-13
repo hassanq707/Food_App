@@ -66,7 +66,7 @@ const Home = ({ url }) => {
                 >
                   <div className="relative w-full h-72 sm:h-56 md:h-60 rounded-t-xl overflow-hidden">
                     <img
-                      src={item.image}
+                      src={item.image.url}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
