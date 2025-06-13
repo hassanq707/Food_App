@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { set_token, set_name, set_admin_auth } from "../store/slices/TokenSlice";
 
-const LoginPopUp = ({ onClose ,url }) => {
+const LoginPopUp = ({ onClose, url }) => {
   const [isSignup, setIsSignup] = useState(true);
   const [agree, setAgree] = useState(false);
   const navigate = useNavigate();
@@ -119,6 +119,9 @@ const LoginPopUp = ({ onClose ,url }) => {
                 placeholder="Password"
                 className="w-full border px-4 py-2 rounded"
               />
+              <p className="text-sm text-gray-500 mt-1 ml-1">
+                Password: min 7 chars, 1 capital, 1 number & 1 symbol.              
+              </p>
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -134,8 +137,8 @@ const LoginPopUp = ({ onClose ,url }) => {
                 type="submit"
                 disabled={!agree}
                 className={`w-full py-2 rounded text-white font-semibold ${agree
-                    ? "bg-orange-700 hover:bg-orange-800"
-                    : "bg-gray-400 cursor-not-allowed"
+                  ? "bg-orange-700 hover:bg-orange-800"
+                  : "bg-gray-400 cursor-not-allowed"
                   }`}
               >
                 Sign Up
