@@ -2,6 +2,8 @@ const USER = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
 const { setUser } = require('../service/token')
+const { fileTypeFromBuffer } = require('file-type');
+
 
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
@@ -86,18 +88,27 @@ const saveProfile = async (req, res) => {
     }
 };
 
+
 const getProfile = async (req, res) => {
   try {
-    const user = await USER.findById(req.userId, { image: 1, mimetype: 1 }); // mimetype bhi store hona chahiye
+    const user = await USER.findById(req.userId, { image: 1 });
 
-    const base64Image = `data:${user.mimetype};base64,${user.image.toString("base64")}`;
+    if (!user || !user.image) {
+      return res.json({ success: true, image: null });
+    }
+
+    const type = await fileTypeFromBuffer(user.image);
+    const mime = type?.mime || "image/jpeg";
+
+    const base64Image = `data:${mime};base64,${user.image.toString("base64")}`;
 
     res.json({ success: true, image: base64Image });
   } catch (err) {
-    console.error(err);
+    console.error("getProfile error:", err);
     res.json({ success: false, message: "Server error" });
   }
 };
+
 
 
 module.exports = {
