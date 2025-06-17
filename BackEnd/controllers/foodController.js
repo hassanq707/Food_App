@@ -64,7 +64,7 @@ const updateFood = async (req, res) => {
             };
         }
         await food.save();
-        res.json({ success: true, message: "Food has been updated" });
+     res.json({ success: true, message: "Food has been updated", updatedItem: food });
     } catch (err) {
         console.log(err);
         res.json({ success: false, message: "Error updating food" });

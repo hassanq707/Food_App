@@ -4,13 +4,18 @@ import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+import { update_food_item } from '../store/slices/FoodSlice';
+
 
 const UpdateItem = ({ url }) => {
     const item = useLocation().state;
     const [image, setImage] = useState(false);
-    const[oldImage,setOldImage] = useState(item.image)
+    const [oldImage, setOldImage] = useState(item.image);
+    const [loading, setLoading] = useState(false);
     const categories = ["Salad", "Rolls", "Cake", "Pasta", "Sandwiches", "Deserts", "Noodles", "Drinks"];
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         name: item.name,
         description: item.description,
@@ -32,6 +37,8 @@ const UpdateItem = ({ url }) => {
 
     const handleSubmitFunc = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('description', data.description);
@@ -51,6 +58,7 @@ const UpdateItem = ({ url }) => {
                     category: 'Salad',
                     price: '',
                 });
+                dispatch(update_food_item(response.data.updatedItem));
                 navigate('/admin/all-items')
                 setImage(false);
                 toast.success(message);
@@ -60,6 +68,8 @@ const UpdateItem = ({ url }) => {
         } catch (err) {
             console.log(err);
             toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,7 +80,6 @@ const UpdateItem = ({ url }) => {
     }, [item, navigate]);
 
     if (!item) return null;
-
 
     return (
         <div className="w-[95%] sm:w-[85%] lg:w-[65%] bg-white p-4 sm:p-6 mx-auto rounded-md shadow-sm transition-all duration-300">
@@ -197,9 +206,11 @@ const UpdateItem = ({ url }) => {
                 <div className="pt-2">
                     <button
                         type="submit"
-                        className="bg-blue-600 text-white px-5 py-2.5 rounded text-sm sm:text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                        disabled={loading}
+                        className={`bg-blue-600 text-white px-5 py-2.5 rounded text-sm sm:text-base transition-colors
+                            ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
                     >
-                        Update Product
+                        {loading ? 'Updating...' : 'Update Product'}
                     </button>
                 </div>
             </form>
@@ -208,4 +219,3 @@ const UpdateItem = ({ url }) => {
 };
 
 export default UpdateItem;
-
