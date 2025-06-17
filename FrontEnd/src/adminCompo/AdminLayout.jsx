@@ -1,10 +1,12 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { FaPlus, FaList, FaClipboardList, FaBars, FaTimes } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clear_name, clear_admin_auth } from "../store/slices/TokenSlice"; 
+import axios from "axios";
+import { set_foods_data } from "../store/slices/FoodSlice";
 
-const AdminLayout = () => {
+const AdminLayout = ({url}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const name = useSelector((state) => state.auth.name);
   const dispatch = useDispatch();
@@ -17,6 +19,20 @@ const AdminLayout = () => {
     dispatch(clear_admin_auth());
     navigate("/");
   };
+
+  useEffect(() => {
+    const fetchFoodItems = async () => {
+      try {
+        const response = await axios.get(`${url}/api/food/list`);
+        if (response.data.success) {
+          dispatch(set_foods_data(response.data.data));
+        }  
+      } catch (err) {
+         console.log(err)
+      }
+    };
+    fetchFoodItems();
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-100">

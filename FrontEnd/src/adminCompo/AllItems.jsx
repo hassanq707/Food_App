@@ -2,32 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
 const AllItems = ({ url }) => {
+  const products = useSelector(data => data.foods.data);
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    axios.get(`${url}/api/food/list`)
-      .then(res => {
-        const { data, success } = res.data;
-        if (success) {
-          setList(data);
-        } else {
-          console.log(res.data.message);
-        }
-      })
-      .catch(err => console.log(err));
-  }, []);
+    setList(products);
+  }, [products]);
 
   const handleRemoveItem = async (id, public_id) => {
+    setList(list.filter((item) => item._id !== id));
     try {
       const response = await axios.post(`${url}/api/food/remove`, { id, public_id });
       const { success, message } = response.data;
-
-      toast.error(message);
       if (success) {
         toast.success(message);
-        setList(list.filter((item) => item._id !== id));
       }
     } catch (error) {
       console.log(error);
@@ -38,10 +29,8 @@ const AllItems = ({ url }) => {
   return (
     <div className="w-[95%] lg:w-[90%] mx-auto bg-white my-8">
       {list.length === 0 ? (
-        <div className="h-[30vh] flex items-center justify-center bg-gray-50 rounded-lg">
-          <p className="text-gray-500 text-xl sm:text-2xl text-center">
-            No items found in the menu.
-          </p>
+        <div className="flex justify-center items-center h-64">
+            <div className="h-12 w-12 rounded-full border-4 border-t-orange-700 border-r-transparent border-b-orange-700 border-l-transparent animate-spin"></div>
         </div>
       ) : (
         <div className="overflow-auto border border-gray-300 rounded-lg mb-6">
@@ -80,8 +69,8 @@ const AllItems = ({ url }) => {
                     </span>
                   </td>
                   <td className="p-2 sm:p-3 text-blue-600 text-sm">
-                    <Link 
-                      to="/admin/updateitem"  
+                    <Link
+                      to="/admin/updateitem"
                       state={item}
                       className="cursor-pointer hover:underline"
                     >

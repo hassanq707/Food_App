@@ -36,7 +36,7 @@ const router = createBrowserRouter(
       </Route>
 
         <Route path="admin" element={<Protected_Route />}>
-          <Route element={<AdminLayout />}>
+          <Route element={<AdminLayout url={url}/>}>
             <Route index element={<Navigate to="add-item" />} />
             <Route path="add-item" element={<AddItem url={url} />} />
             <Route path="all-items" element={<AllItems url={url} />} />

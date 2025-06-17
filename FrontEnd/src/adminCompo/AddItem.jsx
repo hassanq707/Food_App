@@ -6,6 +6,8 @@ const AddItem = ({ url }) => {
   const categories = ["Salad", "Rolls", "Cake", "Pasta", "Sandwiches", "Deserts", "Noodles", "Drinks"];
 
   const [image, setImage] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [data, setData] = useState({
     name: '',
     description: '',
@@ -27,6 +29,8 @@ const AddItem = ({ url }) => {
 
   const handleSubmitFunc = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('description', data.description);
@@ -52,8 +56,11 @@ const AddItem = ({ url }) => {
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <div className="w-[95%] sm:w-[85%] lg:w-[65%] bg-white p-4 sm:p-6 mx-auto rounded-md shadow-sm transition-all duration-300">
@@ -173,9 +180,11 @@ const AddItem = ({ url }) => {
         <div className="pt-2">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-5 py-2.5 rounded text-sm sm:text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            disabled={loading}
+            className={`bg-blue-600 text-white px-5 py-2.5 rounded text-sm sm:text-base transition-colors
+    ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
           >
-            Add Product
+            {loading ? 'Submitting...' : 'Add Product'}
           </button>
         </div>
       </form>

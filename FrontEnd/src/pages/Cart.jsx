@@ -17,23 +17,40 @@ const Cart = ({ url }) => {
   const [promoResult, setPromoResult] = useState(null);
 
   const handleRemoveItem = async (id) => {
-    try {
-      const response = await axios.post(
-        `${url}/api/cart/remove`,
-        { id },
-        { headers: { token } }
-      );
-      const { success, message } = response.data;
-      if (success) {
-        dispatch(remove_from_cart(id));
-        toast.success(message);
-      } else {
-        toast.error(message);
-      }
-    } catch (err) {
-      console.log(err);
+    
+  dispatch(remove_from_cart(id));
+
+  try {
+    const response = await axios.post(
+      `${url}/api/cart/remove`,
+      { id },
+      { headers: { token } }
+    );
+
+    const { success, message } = response.data;
+
+    if (success) {
+      toast.success(message);
+    } else {
+      toast.error(message);
+
+      // Rollback (add back the item in case of failure)
+      dispatch({
+        type: "cart/incrementItem",
+        payload: id
+      });
     }
-  };
+  } catch (err) {
+    console.log(err);
+    toast.error("Something went wrong");
+
+    // Rollback on network/server error
+    dispatch({
+      type: "cart/incrementItem",
+      payload: id
+    });
+  }
+};
 
   useEffect(() => {
     const savedPromo = localStorage.getItem('appliedPromo');
