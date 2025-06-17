@@ -84,9 +84,6 @@ app.post('/checkPromo', authMiddleware, async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.send("Api is working correctly")
-})
 
 app.listen(PORT, () => {
     console.log("Server is listening to PORT: " + PORT)
