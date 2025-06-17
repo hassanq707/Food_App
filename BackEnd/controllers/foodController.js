@@ -10,8 +10,8 @@ const addFood = async (req, res) => {
             price,
             category,
             image: {
-                url: req.file.path,          // Cloudinary URL
-                public_id: req.file.filename // Cloudinary public_id
+                url: req.file.path,          
+                public_id: req.file.filename 
             },
         });
         res.json({ success: true, message: "Food has been added" });
