@@ -62,7 +62,7 @@ const Home = ({ url }) => {
               filteredData.map((item) => (
                 <div
                   key={item._id}
-                  className="rounded-xl shadow hover:shadow-xl bg-white flex flex-col"
+                  className="rounded-xl shadow lg:hover:shadow-xl bg-white flex flex-col"
                 >
                   <div className="relative w-full h-72 sm:h-56 md:h-60 rounded-t-xl overflow-hidden">
                     <img
