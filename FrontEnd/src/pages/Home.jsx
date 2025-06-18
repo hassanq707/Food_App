@@ -38,8 +38,8 @@ const Home = ({ url }) => {
     );
   }, [category, food_list]);
 
-  const inc = (id) => dispatch(updateCart(id, "add", token,url));
-  const dec = (id) => dispatch(updateCart(id, "remove", token,url));
+  const inc = (id) => dispatch(updateCart(id, "add", token, url));
+  const dec = (id) => dispatch(updateCart(id, "remove", token, url));
 
   return (
     <>
@@ -47,7 +47,7 @@ const Home = ({ url }) => {
       <Menu category={category} setCategory={setCategory} />
       <div id="menu" className="w-[90%] lg:w-[85%] mx-auto">
         <div className="py-4">
-          <h1 className="text-3xl sm:text-4xl  font-bold mb-8  text-gray-800 capitalize">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-gray-800 capitalize">
             {category} Items
           </h1>
 
@@ -62,7 +62,7 @@ const Home = ({ url }) => {
               filteredData.map((item) => (
                 <div
                   key={item._id}
-                  className="rounded-xl shadow hover:shadow-xl   bg-white flex flex-col"
+                  className="rounded-xl shadow hover:shadow-xl bg-white flex flex-col"
                 >
                   <div className="relative w-full h-72 sm:h-56 md:h-60 rounded-t-xl overflow-hidden">
                     <img
@@ -71,32 +71,34 @@ const Home = ({ url }) => {
                       className="w-full h-full object-cover"
                     />
 
-                    {!cartCounts[item._id] ? (
+                    <div className={`absolute bottom-2 right-2 bg-white rounded-3xl px-2 py-1 shadow flex items-center gap-2 transition-all duration-200 ${
+                      cartCounts[item._id] ? 'opacity-100 scale-100' : 'opacity-0 scale-50 pointer-events-none'
+                    }`}>
+                      <button
+                        onClick={() => dec(item._id)}
+                        className="w-9 h-9 bg-red-500 text-md text-white rounded-full flex items-center justify-center hover:bg-red-700"
+                      >
+                        -
+                      </button>
+                      <span className="text-gray-800 text-md w-4 text-center">
+                        {cartCounts[item._id] || 0}
+                      </span>
                       <button
                         onClick={() => inc(item._id)}
-                        className="absolute bottom-2 right-2 w-12 h-12 bg-white text-gray-700 rounded-full flex items-center justify-center shadow text-2xl"
+                        className="w-9 h-9 bg-green-500 text-md text-white rounded-full flex items-center justify-center hover:bg-green-700"
                       >
                         +
                       </button>
-                    ) : (
-                      <div className="absolute bottom-2 right-2 bg-white rounded-3xl px-2 py-1 shadow flex items-center gap-2">
-                        <button
-                          onClick={() => dec(item._id)}
-                          className="w-9 h-9 bg-red-500 text-md text-white rounded-full flex items-center justify-center hover:bg-red-700"
-                        >
-                          -
-                        </button>
-                        <span className="text-gray-800 text-md w-4 text-center">
-                          {cartCounts[item._id]}
-                        </span>
-                        <button
-                          onClick={() => inc(item._id)}
-                          className="w-9 h-9 bg-green-500 text-md text-white rounded-full flex items-center justify-center hover:bg-green-700"
-                        >
-                          +
-                        </button>
-                      </div>
-                    )}
+                    </div>
+
+                    <button
+                      onClick={() => inc(item._id)}
+                      className={`absolute bottom-2 right-2 w-12 h-12 bg-white text-gray-700 rounded-full flex items-center justify-center shadow text-2xl transition-all duration-200 ${
+                        cartCounts[item._id] ? 'opacity-0 scale-50 pointer-events-none' : 'opacity-100 scale-100'
+                      }`}
+                    >
+                      +
+                    </button>
                   </div>
 
                   <div className="p-4 flex flex-col flex-grow">
@@ -126,3 +128,4 @@ const Home = ({ url }) => {
 };
 
 export default Home;
+
